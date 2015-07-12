@@ -1,4 +1,4 @@
-from itertools import permutations
+import itertools
 
 PIECES = {
     'K': 'rules',
@@ -9,22 +9,13 @@ PIECES = {
 }
 
 
-def get_positions(self, x, y, **pieces):
-    """
-    Iterates over all possible positions.
-    Each position is a tuple.
+def get_coordinates(x, y):
+    return itertools.product(range(x), range(y))
 
-    x, y - board dimensions
-    pieces - mapping of piece type to amount (eg. {'K': 2, 'B': 1})
-    """
-    if not all(piece in PIECES for piece in pieces):
-        raise TypeError('Invalid piece type')
 
-    pieces_string = ''.join(k * v for k, v in pieces.items())
+def get_positions(x, y, pieces):
+    coordinates = get_coordinates(x, y)
+    return itertools.permutations(coordinates, pieces)
 
-    empty_squares = x * y - len(pieces_string)
-    if empty_squares < 0:
-        raise ValueError('Too many pieces')
-
-    pieces_string += ' ' * empty_squares
-    return permutations(pieces_string)
+# print(tuple(get_coordinates(2, 2)))
+print(tuple(get_positions(2, 2, 1)))
