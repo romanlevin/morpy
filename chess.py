@@ -1,41 +1,50 @@
+"""
+Cooridinate system is x, y - going from the top left corner to the bottom
+right.
+"""
+
 import itertools
 import textwrap
+from collections import namedtuple
 
+KING, QUEEN, BISHOP, KNIGHT, ROOK = '♔♕♗♘♖'
 PIECES = {
-    'K': 'rules',
-    'Q': 'rules',
-    'B': 'rules',
-    'N': 'rules',
-    'R': 'rules',
+    KING: 'rules',
+    QUEEN: 'rules',
+    BISHOP: 'rules',
+    KNIGHT: 'rules',
+    ROOK: 'rules',
 }
 
-
-def get_coordinates(x, y):
-    return itertools.product(range(x), range(y))
-
-
-def get_positions(x, y, pieces):
-    coordinates = get_coordinates(x, y)
-    return itertools.permutations(coordinates, pieces)
+Coordinate = namedtuple('Coordinate', ['x', 'y'])
+Dimensions = namedtuple('Dimensions', ['x', 'y'])
+Position = namedtuple('Position', ['board', 'dimensions'])
 
 
-def get_boards(x, y, pieces=''):
-    pieces = sorted(pieces)
-    positions = get_positions(x, y, len(pieces))
-    for position in positions:
-        board = {
-            coordinate: piece for coordinate, piece in zip(position, pieces)}
-        yield board
+def get_coordinates(dimensions):
+    d_x, d_y = dimensions
+    return (Coordinate(x=x, y=y) for x, y in
+            itertools.product(range(d_x), range(d_y)))
 
 
-def draw_board(board, x, y):
+def get_positions(dimensions, pieces_to_place):
+    coordinates = get_coordinates(dimensions)
+    position_coords = itertools.permutations(coordinates, len(pieces_to_place))
+    for coords in position_coords:
+        board = dict(zip(coords, pieces_to_place))
+        yield Position(board=board, dimensions=dimensions)
+
+
+def draw_position(position):
+    board = position.board
+    dimensions = position.dimensions
     array = ''.join(
-        board.get(coordinate, '□') for coordinate in get_coordinates(x, y))
-    print(textwrap.fill(array, x, drop_whitespace=False))
+        board.get(coordinate, '□') for coordinate in
+        get_coordinates(dimensions))
+    print(textwrap.fill(array, dimensions.x, drop_whitespace=False))
 
-# print(tuple(get_coordinates(2, 2)))
-# print(tuple(get_positions(2, 2, 1)))
-X, Y, PIECES = 2, 2, '♕'
-for board in get_boards(X, Y, PIECES):
-    draw_board(board, X, Y)
+
+X, Y, PIECES = 2, 2, QUEEN + ROOK
+for position in get_positions(Dimensions(X, Y), PIECES):
+    draw_position(position)
     print('-' * X)
