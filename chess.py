@@ -19,6 +19,7 @@ PIECES = {
 Coordinate = namedtuple('Coordinate', ['x', 'y'])
 Dimensions = namedtuple('Dimensions', ['x', 'y'])
 Position = namedtuple('Position', ['board', 'dimensions'])
+PlacedPiece = namedtuple('PlacedPiece', ['type', 'coordinate', 'board_dimensions'])
 
 
 def get_coordinates(dimensions):
