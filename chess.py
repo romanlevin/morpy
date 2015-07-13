@@ -72,6 +72,7 @@ def diagonals(piece):
             new_coord = Coordinate(x=new_coord.x + d_x, y=new_coord.y + d_y)
 
 
+# TODO: Should be called get_attacked_coordinates
 def get_attacked_positions(piece):
     """
     Takes a PlacedPiece object and returns a set of all positions it attacks.
@@ -108,7 +109,13 @@ def get_attacked_positions(piece):
 
 
 def get_valid_positions(dimensions, pieces):
-    pass
+    for position in get_positions(dimensions, pieces):
+        placed_pieces = (
+            PlacedPiece(piece_type, coords, dimensions)
+            for coords, piece_type in position.board.items())
+        attacked_positions = {coords for piece in placed_pieces for coords in get_attacked_positions(piece)}
+        if not any(coord in position.board for coord in attacked_positions):
+            yield position
 
 
 if __name__ == '__main__':
