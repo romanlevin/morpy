@@ -95,7 +95,7 @@ def get_attacked_positions(piece):
 
     elif piece_type == KNIGHT:
         potential_attacked = (
-            Coordinate(x=coord.x + s_x * d_x, y=coord.y + s_y * s_x)
+            Coordinate(x=coord.x + s_x * d_x, y=coord.y + s_y * d_y)
             for s_x, s_y in itertools.product((-1, 1), repeat=2)
             for d_x, d_y in ((1, 2), (2, 1))
             )
