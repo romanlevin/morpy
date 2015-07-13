@@ -107,6 +107,10 @@ def get_attacked_positions(piece):
     return attacked
 
 
+def get_valid_positions(dimensions, pieces):
+    pass
+
+
 if __name__ == '__main__':
     X, Y, PIECES = 2, 2, QUEEN + ROOK
     for position in get_positions(Dimensions(X, Y), PIECES):
