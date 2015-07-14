@@ -1,4 +1,5 @@
 import chess
+from frozendict import frozendict
 
 
 def test_attacked_positions_king():
@@ -71,37 +72,34 @@ def test_get_valid_positions_3_by_3_two_kings_one_rook():
     Coordinate = chess.Coordinate
     dimensions = chess.Dimensions(3, 3)
     pieces = 2 * chess.KING + chess.ROOK
-    positions = tuple(chess.get_valid_positions(dimensions, pieces))
+    positions = chess.get_valid_positions(dimensions, pieces)
     position_1 = chess.Position(
-        {
+        frozendict({
             Coordinate(0, 1): chess.ROOK,
             Coordinate(2, 0): chess.KING,
             Coordinate(2, 2): chess.KING,
-        },
+        }),
         dimensions)
     position_2 = chess.Position(
-        {
+        frozendict({
             Coordinate(1, 0): chess.ROOK,
             Coordinate(0, 2): chess.KING,
             Coordinate(2, 2): chess.KING,
-        },
+        }),
         dimensions)
     position_3 = chess.Position(
-        {
+        frozendict({
             Coordinate(1, 2): chess.ROOK,
             Coordinate(0, 0): chess.KING,
             Coordinate(2, 0): chess.KING,
-        },
+        }),
         dimensions)
     position_4 = chess.Position(
-        {
+        frozendict({
             Coordinate(2, 1): chess.ROOK,
             Coordinate(0, 0): chess.KING,
             Coordinate(0, 2): chess.KING,
-        },
+        }),
         dimensions)
     expected = (position_1, position_2, position_3, position_4)
-    for e in expected:
-        assert e in positions
-    for position in positions:
-        assert position in expected
+    assert set(expected) == set(positions)

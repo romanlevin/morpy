@@ -6,6 +6,7 @@ right.
 import itertools
 import textwrap
 from collections import namedtuple
+from frozendict import frozendict
 
 KING, QUEEN, BISHOP, KNIGHT, ROOK = '♔♕♗♘♖'
 PIECES = {
@@ -32,7 +33,7 @@ def get_positions(dimensions, pieces_to_place):
     coordinates = get_coordinates(dimensions)
     position_coords = itertools.permutations(coordinates, len(pieces_to_place))
     for coords in position_coords:
-        board = dict(zip(coords, pieces_to_place))
+        board = frozendict(zip(coords, pieces_to_place))
         yield Position(board=board, dimensions=dimensions)
 
 
