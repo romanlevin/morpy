@@ -30,10 +30,14 @@ def get_coordinates(dimensions):
 
 
 def get_positions(dimensions, pieces_to_place):
+    checked_boards = set()
     coordinates = get_coordinates(dimensions)
     position_coords = itertools.permutations(coordinates, len(pieces_to_place))
     for coords in position_coords:
         board = frozendict(zip(coords, pieces_to_place))
+        if board in checked_boards:
+            continue
+        checked_boards.add(board)
         yield Position(board=board, dimensions=dimensions)
 
 
@@ -120,7 +124,7 @@ def get_valid_positions(dimensions, pieces):
 
 
 if __name__ == '__main__':
-    X, Y, PIECES = 2, 2, QUEEN + ROOK
-    for position in get_positions(Dimensions(X, Y), PIECES):
+    X, Y, PIECES = 3, 3, 2 * KING + ROOK
+    for position in get_valid_positions(Dimensions(X, Y), PIECES):
         draw_position(position)
         print('-' * X)
