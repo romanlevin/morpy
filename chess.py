@@ -124,7 +124,10 @@ def get_valid_positions(dimensions, pieces):
 
 
 if __name__ == '__main__':
-    X, Y, PIECES = 3, 3, 2 * KING + ROOK
-    for position in get_valid_positions(Dimensions(X, Y), PIECES):
-        draw_position(position)
-        print('-' * X)
+    # X, Y, PIECES = 3, 3, 2 * KING + ROOK
+    # for position in get_valid_positions(Dimensions(X, Y), PIECES):
+    #     draw_position(position)
+    #     print('-' * X)
+
+    X, Y, PIECES = 4, 4, 2 * KING + 2 * QUEEN + 2 * BISHOP
+    print(len(tuple(get_valid_positions(Dimensions(X, Y), PIECES))))
