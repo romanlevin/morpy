@@ -52,7 +52,7 @@ def get_positions_iter(dimensions, pieces_to_place):
     # Populate intial valid positions by placing the first piece at each of the coordinates
     coordinates = tuple(get_coordinates(dimensions))
     last_pass = {
-        Position(board=frozendict({coords: pieces_to_place[1]}), dimensions=dimensions) for coords in coordinates
+        Position(board=frozendict({coords: pieces_to_place[0]}), dimensions=dimensions) for coords in coordinates
     }
     current_pass = set()
 
