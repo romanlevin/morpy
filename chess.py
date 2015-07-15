@@ -50,8 +50,9 @@ def get_positions_iter(dimensions, pieces_to_place):
     Iteratively generate all valid positions for `dimensions` and `pieces_to_place`.
     """
     # Populate intial valid positions by placing the first piece at each of the coordinates
+    coordinates = tuple(get_coordinates(dimensions))
     last_pass = {
-        Position(board=frozendict({coords: pieces_to_place[1]}), dimensions=dimensions) for coords in get_coordinates(dimensions)
+        Position(board=frozendict({coords: pieces_to_place[1]}), dimensions=dimensions) for coords in coordinates
     }
     current_pass = set()
 
@@ -59,7 +60,7 @@ def get_positions_iter(dimensions, pieces_to_place):
         # For each valid position already found, find all valid position that also include `piece`.
         for position in last_pass:
             attacked_in_position = attacked_coordinates_in_position(position)
-            for coords in get_coordinates(dimensions):
+            for coords in coordinates:
                 if coords in position.board or coords in attacked_in_position:
                     continue
                 placed_piece = PlacedPiece(piece, coords, dimensions)
