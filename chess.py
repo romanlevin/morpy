@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Cooridinate system is x, y - going from the top left corner to the bottom
 right.
@@ -7,6 +8,7 @@ import itertools
 import textwrap
 from collections import namedtuple
 from frozendict import frozendict
+import argparse
 
 KING, QUEEN, BISHOP, KNIGHT, ROOK = '♔♕♗♘♖'
 PIECES = {
@@ -225,14 +227,21 @@ def get_valid_positions(dimensions, pieces):
             yield position
 
 
-if __name__ == '__main__':
-    # X, Y, PIECES = 3, 3, 2 * KING + ROOK
-    # for position in get_valid_positions(Dimensions(X, Y), PIECES):
-    #     draw_position(position)
-    #     print('-' * X)
+def parse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('N', type=int)
+    parser.add_argument('M', type=int)
+    parser.add_argument('--kings', type=int, metavar='n', default=0)
+    parser.add_argument('--queens', type=int, metavar='n', default=0)
+    parser.add_argument('--bishops', type=int, metavar='n', default=0)
+    parser.add_argument('--knights', type=int, metavar='n', default=0)
+    parser.add_argument('--rooks', type=int, metavar='n', default=0)
+    return parser.parse_args()
 
-    # X, Y, PIECES = 5, 5, 2 * KING + 1 * QUEEN + 1 * BISHOP
-    X, Y, PIECES = 7, 7, 2 * KING + 2 * QUEEN + 2 * BISHOP + KNIGHT
-    # X, Y, PIECES = 6, 6, 2 * ROOK + 4 * KNIGHT
-    # print(len(tuple(get_valid_positions(Dimensions(X, Y), PIECES))))
-    print(len(tuple(get_positions_iter(Dimensions(X, Y), PIECES))))
+
+if __name__ == '__main__':
+    args = parse()
+    dimensions = Dimensions(args.N, args.M)
+    pieces = args.kings * KING + args.queens * QUEEN + args.bishops * BISHOP
+    pieces += args.knights * KNIGHT + args.rooks * ROOK
+    print(len(tuple(get_positions_iter(dimensions, pieces))))
