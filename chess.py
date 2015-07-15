@@ -32,6 +32,36 @@ def get_coordinates(dimensions):
                 itertools.product(range(d_x), range(d_y)))
 
 
+def get_positions_iter(dimensions, pieces_to_place):
+    """
+    Iteratively generate all valid positions for `dimensions` and `pieces_to_place`.
+    """
+    # Populate intial valid positions by placing the first piece at each of the coordinates
+    last_pass = {
+        Position(board=frozendict({coords: pieces_to_place[1]}), dimensions=dimensions) for coords in get_coordinates(dimensions)
+    }
+    current_pass = set()
+
+    for piece in pieces_to_place[1:]:
+        # For each valid position already found, find all valid position that also include `piece`.
+        for position in last_pass:
+            attacked_in_position = attacked_coordinates_in_position(position)
+            for coords in get_coordinates(dimensions):
+                if coords in position.board or coords in attacked_in_position:
+                    continue
+                placed_piece = PlacedPiece(piece, coords, dimensions)
+                attacked_by_piece = get_attacked_coordinates(placed_piece)
+                if set(attacked_by_piece) & set(position.board.keys()):
+                    continue
+                board = {coords: piece}
+                board.update(position.board)
+                frozen_board = frozendict(board)
+                new_position = Position(frozen_board, dimensions)
+                current_pass.add(new_position)
+        last_pass, current_pass = current_pass, set()
+    return last_pass
+
+
 def get_positions(dimensions, pieces_to_place):
     """
     A generator of all possible positions given `dimensions` and `pieces_to_place`.
@@ -132,14 +162,19 @@ def get_attacked_coordinates(piece):
     return attacked
 
 
-def is_position_valid(position):
-    """
-    Are all pieces in `position` independent?
-    """
+def attacked_coordinates_in_position(position):
     placed_pieces = (
         PlacedPiece(piece_type, coords, position.dimensions)
         for coords, piece_type in position.board.items())
     attacked_coordinates = {coords for piece in placed_pieces for coords in get_attacked_coordinates(piece)}
+    return attacked_coordinates
+
+
+def is_position_valid(position):
+    """
+    Are all pieces in `position` independent?
+    """
+    attacked_coordinates = attacked_coordinates_in_position(position)
     return not any(coord in position.board for coord in attacked_coordinates)
 
 
@@ -155,5 +190,8 @@ if __name__ == '__main__':
     #     draw_position(position)
     #     print('-' * X)
 
-    X, Y, PIECES = 7, 7, 2 * KING + 2 * QUEEN + 2 * BISHOP + KNIGHT
-    print(len(tuple(get_valid_positions(Dimensions(X, Y), PIECES))))
+    # X, Y, PIECES = 5, 5, 2 * KING + 1 * QUEEN + 1 * BISHOP
+    # X, Y, PIECES = 7, 7, 2 * KING + 2 * QUEEN + 2 * BISHOP + KNIGHT
+    X, Y, PIECES = 6, 6, 2 * ROOK + 4 * KNIGHT
+    # print(len(tuple(get_valid_positions(Dimensions(X, Y), PIECES))))
+    print(len(tuple(get_positions_iter(Dimensions(X, Y), PIECES))))

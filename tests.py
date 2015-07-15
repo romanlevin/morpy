@@ -103,3 +103,40 @@ def test_get_valid_positions_3_by_3_two_kings_one_rook():
         dimensions)
     expected = (position_1, position_2, position_3, position_4)
     assert set(expected) == set(positions)
+
+
+def test_get_valid_positions_3_by_3_two_kings_one_rook_iter():
+    Coordinate = chess.Coordinate
+    dimensions = chess.Dimensions(3, 3)
+    pieces = 2 * chess.KING + chess.ROOK
+    positions = chess.get_positions_iter(dimensions, pieces)
+    position_1 = chess.Position(
+        frozendict({
+            Coordinate(0, 1): chess.ROOK,
+            Coordinate(2, 0): chess.KING,
+            Coordinate(2, 2): chess.KING,
+        }),
+        dimensions)
+    position_2 = chess.Position(
+        frozendict({
+            Coordinate(1, 0): chess.ROOK,
+            Coordinate(0, 2): chess.KING,
+            Coordinate(2, 2): chess.KING,
+        }),
+        dimensions)
+    position_3 = chess.Position(
+        frozendict({
+            Coordinate(1, 2): chess.ROOK,
+            Coordinate(0, 0): chess.KING,
+            Coordinate(2, 0): chess.KING,
+        }),
+        dimensions)
+    position_4 = chess.Position(
+        frozendict({
+            Coordinate(2, 1): chess.ROOK,
+            Coordinate(0, 0): chess.KING,
+            Coordinate(0, 2): chess.KING,
+        }),
+        dimensions)
+    expected = (position_1, position_2, position_3, position_4)
+    assert set(expected) == set(positions)
