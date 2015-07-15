@@ -99,7 +99,7 @@ def filter_coordinates(coordinates, dimensions):
     return filter(lambda coord: 0 <= coord.x < dimensions.x and 0 <= coord.y < dimensions.y, coordinates)
 
 
-def rank_and_file(piece):
+def rank_and_file_iter(piece):
     """
     Generates all squares on the same rank and file as `piece`.
     """
@@ -113,7 +113,11 @@ def rank_and_file(piece):
         ))
 
 
-def diagonals(piece):
+def rank_and_file(piece):
+    return set(rank_and_file_iter(piece))
+
+
+def diagonals_iter(piece):
     """
     Generates all squares on the same diagonals as `piece`.
     """
@@ -127,37 +131,55 @@ def diagonals(piece):
             new_coord = Coordinate(x=new_coord.x + d_x, y=new_coord.y + d_y)
 
 
+def diagonals(piece):
+    return set(diagonals_iter(piece))
+
+
+def knight_moves(piece):
+    coord = piece.coordinate
+    dimensions = piece.board_dimensions
+    potential_attacked = (
+        Coordinate(x=coord.x + s_x * d_x, y=coord.y + s_y * d_y)
+        for s_x, s_y in itertools.product((-1, 1), repeat=2)
+        for d_x, d_y in ((1, 2), (2, 1))
+        )
+    return set(filter_coordinates(potential_attacked, dimensions))
+
+
+def king_moves(piece):
+    coord = piece.coordinate
+    dimensions = piece.board_dimensions
+    potential_attacked = (
+        Coordinate(x=coord.x + d_x, y=coord.y + d_y)
+        for d_x, d_y in itertools.product((-1, 0, 1), repeat=2)
+        if not (d_x == 0 and d_y == 0))
+    return set(filter_coordinates(potential_attacked, dimensions))
+
+
+def queen_moves(piece):
+    return set(itertools.chain(diagonals(piece), rank_and_file(piece)))
+
+
 def get_attacked_coordinates(piece):
     """
     Takes a PlacedPiece object and returns a set of all positions it attacks.
     """
-    dimensions = piece.board_dimensions
-    coord = piece.coordinate
     piece_type = piece.type
 
     if piece_type == KING:
-        potential_attacked = (
-            Coordinate(x=coord.x + d_x, y=coord.y + d_y)
-            for d_x, d_y in itertools.product((-1, 0, 1), repeat=2)
-            if not (d_x == 0 and d_y == 0))
-        attacked = set(filter_coordinates(potential_attacked, dimensions))
+        attacked = king_moves(piece)
 
     elif piece_type == QUEEN:
-        attacked = set(itertools.chain(diagonals(piece), rank_and_file(piece)))
+        attacked = queen_moves(piece)
 
     elif piece_type == BISHOP:
-        attacked = set(diagonals(piece))
+        attacked = diagonals(piece)
 
     elif piece_type == KNIGHT:
-        potential_attacked = (
-            Coordinate(x=coord.x + s_x * d_x, y=coord.y + s_y * d_y)
-            for s_x, s_y in itertools.product((-1, 1), repeat=2)
-            for d_x, d_y in ((1, 2), (2, 1))
-            )
-        attacked = set(filter_coordinates(potential_attacked, dimensions))
+        attacked = knight_moves(piece)
 
     elif piece_type == ROOK:
-        attacked = set(rank_and_file(piece))
+        attacked = rank_and_file(piece)
 
     return attacked
 
