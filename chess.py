@@ -24,12 +24,21 @@ PlacedPiece = namedtuple('PlacedPiece', ['type', 'coordinate', 'board_dimensions
 
 
 def get_coordinates(dimensions):
+    """
+    A generator of all possible coordinates in a `dimensions`-sized board.
+    """
     d_x, d_y = dimensions
-    return (Coordinate(x=x, y=y) for x, y in
-            itertools.product(range(d_x), range(d_y)))
+    yield from (Coordinate(x=x, y=y) for x, y in
+                itertools.product(range(d_x), range(d_y)))
 
 
 def get_positions(dimensions, pieces_to_place):
+    """
+    A generator of all possible positions given `dimensions` and `pieces_to_place`.
+
+    `pieces_to_place` is a string of piece types - eg '♔♔♖' will place two kings and
+    a rook on the board.
+    """
     checked_boards = set()
     coordinates = get_coordinates(dimensions)
     position_coords = itertools.permutations(coordinates, len(pieces_to_place))
@@ -42,6 +51,9 @@ def get_positions(dimensions, pieces_to_place):
 
 
 def draw_position(position):
+    """
+    Prints a graphical representation of `position`.
+    """
     board = position.board
     dimensions = position.dimensions
     array = ''.join(
@@ -51,22 +63,30 @@ def draw_position(position):
 
 
 def filter_coordinates(coordinates, dimensions):
+    """
+    Filters iterable `coordinates` from all members who are outisde of `dimensions`.
+    """
     return filter(lambda coord: 0 <= coord.x < dimensions.x and 0 <= coord.y < dimensions.y, coordinates)
 
 
 def rank_and_file(piece):
+    """
+    Generates all squares on the same rank and file as `piece`.
+    """
     dimensions = piece.board_dimensions
     coord = piece.coordinate
-    attacked = (
+    yield from (
         Coordinate(x=x, y=y)
         for x, y in itertools.chain(
             ((coord.x, y) for y in range(dimensions.y) if y != coord.y),
             ((x, coord.y) for x in range(dimensions.x) if x != coord.x),
         ))
-    return attacked
 
 
 def diagonals(piece):
+    """
+    Generates all squares on the same diagonals as `piece`.
+    """
     dimensions = piece.board_dimensions
     coord = piece.coordinate
     directions = itertools.product((1, -1), repeat=2)
@@ -113,6 +133,9 @@ def get_attacked_coordinates(piece):
 
 
 def is_position_valid(position):
+    """
+    Are all pieces in `position` independent?
+    """
     placed_pieces = (
         PlacedPiece(piece_type, coords, position.dimensions)
         for coords, piece_type in position.board.items())
@@ -132,5 +155,5 @@ if __name__ == '__main__':
     #     draw_position(position)
     #     print('-' * X)
 
-    X, Y, PIECES = 4, 4, 2 * KING + 2 * QUEEN + 2 * BISHOP
+    X, Y, PIECES = 7, 7, 2 * KING + 2 * QUEEN + 2 * BISHOP + KNIGHT
     print(len(tuple(get_valid_positions(Dimensions(X, Y), PIECES))))
