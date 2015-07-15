@@ -23,6 +23,19 @@ Position = namedtuple('Position', ['board', 'dimensions'])
 PlacedPiece = namedtuple('PlacedPiece', ['type', 'coordinate', 'board_dimensions'])
 
 
+def cache_attack_map(f):
+    cache = {}
+
+    def wrapper(piece):
+        result = cache.get(piece.coordinate)
+        if not result:
+            result = f(piece)
+            cache[piece.coordinate] = result
+        return result
+
+    return wrapper
+
+
 def get_coordinates(dimensions):
     """
     A generator of all possible coordinates in a `dimensions`-sized board.
@@ -113,6 +126,7 @@ def rank_and_file_iter(piece):
         ))
 
 
+@cache_attack_map
 def rank_and_file(piece):
     return set(rank_and_file_iter(piece))
 
@@ -131,10 +145,12 @@ def diagonals_iter(piece):
             new_coord = Coordinate(x=new_coord.x + d_x, y=new_coord.y + d_y)
 
 
+@cache_attack_map
 def diagonals(piece):
     return set(diagonals_iter(piece))
 
 
+@cache_attack_map
 def knight_moves(piece):
     coord = piece.coordinate
     dimensions = piece.board_dimensions
@@ -146,6 +162,7 @@ def knight_moves(piece):
     return set(filter_coordinates(potential_attacked, dimensions))
 
 
+@cache_attack_map
 def king_moves(piece):
     coord = piece.coordinate
     dimensions = piece.board_dimensions
@@ -156,8 +173,9 @@ def king_moves(piece):
     return set(filter_coordinates(potential_attacked, dimensions))
 
 
+@cache_attack_map
 def queen_moves(piece):
-    return set(itertools.chain(diagonals(piece), rank_and_file(piece)))
+    return diagonals(piece) + rank_and_file(piece)
 
 
 def get_attacked_coordinates(piece):
