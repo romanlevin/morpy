@@ -176,7 +176,7 @@ def king_moves(piece):
 
 @cache_attack_map
 def queen_moves(piece):
-    return diagonals(piece) + rank_and_file(piece)
+    return diagonals(piece) | rank_and_file(piece)
 
 
 def get_attacked_coordinates(piece):
@@ -232,7 +232,7 @@ if __name__ == '__main__':
     #     print('-' * X)
 
     # X, Y, PIECES = 5, 5, 2 * KING + 1 * QUEEN + 1 * BISHOP
-    # X, Y, PIECES = 7, 7, 2 * KING + 2 * QUEEN + 2 * BISHOP + KNIGHT
-    X, Y, PIECES = 6, 6, 2 * ROOK + 4 * KNIGHT
+    X, Y, PIECES = 7, 7, 2 * KING + 2 * QUEEN + 2 * BISHOP + KNIGHT
+    # X, Y, PIECES = 6, 6, 2 * ROOK + 4 * KNIGHT
     # print(len(tuple(get_valid_positions(Dimensions(X, Y), PIECES))))
     print(len(tuple(get_positions_iter(Dimensions(X, Y), PIECES))))
