@@ -9,20 +9,47 @@ import textwrap
 from collections import namedtuple
 from frozendict import frozendict
 import argparse
+import random
+from functools import reduce
+from operator import xor
 
 KING, QUEEN, BISHOP, KNIGHT, ROOK = '♔♕♗♘♖'
-PIECES = {
-    KING: 'rules',
-    QUEEN: 'rules',
-    BISHOP: 'rules',
-    KNIGHT: 'rules',
-    ROOK: 'rules',
-}
+PIECES = (KING, QUEEN, BISHOP, KNIGHT, ROOK)
 
 Coordinate = namedtuple('Coordinate', ['x', 'y'])
 Dimensions = namedtuple('Dimensions', ['x', 'y'])
-Position = namedtuple('Position', ['board', 'dimensions'])
+# Position = namedtuple('Position', ['board', 'dimensions'])
 PlacedPiece = namedtuple('PlacedPiece', ['type', 'coordinate', 'board_dimensions'])
+
+
+class Position(object):
+    _zobrist_table = None
+    slots = ('board', 'dimensions', 'zobrist_table')
+
+    def __init__(self, board, dimensions):
+        self.board = board
+        self.dimensions = dimensions
+        if not self.zobrist_table:
+            self.init_zobrist()
+        self.__hash = None
+
+    @property
+    def zobrist_table(self):
+        return self.__class__._zobrist_table
+
+    def init_zobrist(self):
+        cls = self.__class__
+        cls.zobrist_table = frozendict(
+            (key, random.randint(0, 2 ** 64)) for key
+            in itertools.product(get_coordinates(self.dimensions), PIECES))
+
+    def __hash__(self):
+        if not self.__hash:
+            self.__hash = reduce(xor, map(lambda key: self.zobrist_table[key], self.board.items()), 0)
+        return self.__hash
+
+    def __eq__(self, other):
+        return self.board == other.board and self.dimensions == other.dimensions
 
 
 def cache_attack_map(f):
