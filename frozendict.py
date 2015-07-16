@@ -10,6 +10,7 @@ from operator import xor
 
 
 class FrozenDict(dict):
+
     def __init__(self, *args, **kwargs):
         super(FrozenDict, self).__init__(*args, **kwargs)
         self.__hash = None
