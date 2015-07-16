@@ -7,3 +7,4 @@
   2. Account for rotational symmetry.
   3. Memoization of attack map computation. ✓
 5. Command-line interface. ✓
+6. Experiment with Zobrist hashing. (zobrist branch) ✓
