@@ -7,7 +7,27 @@ returns all the positions that utilize all the pieces while keeping them indepen
 
 Morpy is named after [Paul Morphy](https://en.wikipedia.org/wiki/Paul_Morphy).
 
-## Usage example
+## Install
+
+```bash
+pip install -e git+https://github.com/romanlevin/morpy.git#egg=morpy
+```
+
+## Usage
+
+```bash
+$ time morpy.py 7 7 --kings 2 --queens 2 --bishops 2 --knights 1
+3063828
+
+real	1m36.006s
+user	1m35.092s
+sys	0m0.864s
+```
+
+## API
+
+Courtesy of `argparse`:
+
 ```bash
 $ morpy.py --help
 usage: morpy.py [-h] [--kings n] [--queens n] [--bishops n] [--knights n]
@@ -26,13 +46,4 @@ optional arguments:
   --knights n     Number of knight pieces to place on the board
   --rooks n       Number of rook pieces to place on the board
   --print-pieces  Print the pieces to be placed on the board
-```
-
-```bash
-$ time morpy.py 7 7 --kings 2 --queens 2 --bishops 2 --knights 1
-3063828
-
-real	1m36.006s
-user	1m35.092s
-sys	0m0.864s
 ```
