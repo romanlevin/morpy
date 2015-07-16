@@ -33,7 +33,7 @@ optional arguments:
 $ time morpy.py 7 7 --kings 2 --queens 2 --bishops 2 --knights 1
 3063828
 
-real	1m36.006s
-user	1m35.092s
-sys	  0m0.864s
+real  1m36.006s
+user  1m35.092s
+sys   0m0.864s
 ```
