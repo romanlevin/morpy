@@ -53,7 +53,6 @@ def get_positions_iter(dimensions, pieces_to_place):
     """
     Iteratively generate all valid positions for `dimensions` and `pieces_to_place`.
     """
-    print(pieces_to_place)
     # Populate intial valid positions by placing the first piece at each of the coordinates
     coordinates = tuple(get_coordinates(dimensions))
     last_pass = {
@@ -234,13 +233,14 @@ def get_valid_positions(dimensions, pieces):
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('N', type=int)
-    parser.add_argument('M', type=int)
-    parser.add_argument('--kings', type=int, metavar='n', default=0)
-    parser.add_argument('--queens', type=int, metavar='n', default=0)
-    parser.add_argument('--bishops', type=int, metavar='n', default=0)
-    parser.add_argument('--knights', type=int, metavar='n', default=0)
-    parser.add_argument('--rooks', type=int, metavar='n', default=0)
+    parser.add_argument('N', type=int, help='First board dimension')
+    parser.add_argument('M', type=int, help='Second board dimension')
+    parser.add_argument('--kings', type=int, metavar='n', default=0, help='Number of king pieces to place on the board')
+    parser.add_argument('--queens', type=int, metavar='n', default=0, help='Number of queen pieces to place on the board')
+    parser.add_argument('--bishops', type=int, metavar='n', default=0, help='Number of bishop pieces to place on the board')
+    parser.add_argument('--knights', type=int, metavar='n', default=0, help='Number of knight pieces to place on the board')
+    parser.add_argument('--rooks', type=int, metavar='n', default=0, help='Number of rook pieces to place on the board')
+    parser.add_argument('--print-pieces', action='store_true', help='Print the pieces to be placed on the board')
     return parser.parse_args()
 
 
@@ -249,4 +249,6 @@ if __name__ == '__main__':
     dimensions = Dimensions(args.N, args.M)
     pieces = args.kings * KING + args.queens * QUEEN + args.bishops * BISHOP
     pieces += args.knights * KNIGHT + args.rooks * ROOK
-    print(len(tuple(get_positions_iter(dimensions, pieces))))
+    if args.print_pieces:
+        print(pieces)
+    print(len(get_positions_iter(dimensions, pieces)))
