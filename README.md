@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/romanlevin/morpy.svg?branch=master)](https://travis-ci.org/romanlevin/morpy)
 # Morpy
 ## A python tool for finding independent chess positions
 
