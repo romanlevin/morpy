@@ -8,3 +8,4 @@
   3. Memoization of attack map computation. ✓
 5. Command-line interface. ✓
 6. Experiment with Zobrist hashing. (zobrist branch) ✓
+7. Experiment with multi-processing.
