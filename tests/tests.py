@@ -1,5 +1,5 @@
-import morpy
-from frozendict import frozendict
+from morpy import morpy
+from morpy.frozendict import frozendict
 
 
 def test_attacked_positions_king():

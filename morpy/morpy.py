@@ -9,7 +9,7 @@ from __future__ import print_function, unicode_literals
 import itertools
 import textwrap
 from collections import namedtuple
-from frozendict import frozendict
+from .frozendict import frozendict
 import argparse
 
 KING, QUEEN, BISHOP, KNIGHT, ROOK = '♔♕♗♘♖'
@@ -244,7 +244,7 @@ def parse():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = parse()
     dimensions = Dimensions(args.N, args.M)
     pieces = args.kings * KING + args.queens * QUEEN + args.bishops * BISHOP
@@ -252,3 +252,6 @@ if __name__ == '__main__':
     if args.print_pieces:
         print(pieces)
     print(len(get_positions_iter(dimensions, pieces)))
+
+if __name__ == '__main__':
+    main()

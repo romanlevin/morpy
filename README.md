@@ -9,7 +9,7 @@ Morpy is named after [Paul Morphy](https://en.wikipedia.org/wiki/Paul_Morphy).
 
 ## Usage example
 ```bash
-$ ./morpy.py --help
+$ morpy.py --help
 usage: morpy.py [-h] [--kings n] [--queens n] [--bishops n] [--knights n]
                 [--rooks n] [--print-pieces]
                 N M
@@ -29,7 +29,7 @@ optional arguments:
 ```
 
 ```bash
-$ time ./morpy.py 7 7 --kings 2 --queens 2 --bishops 2 --knights 1
+$ time morpy.py 7 7 --kings 2 --queens 2 --bishops 2 --knights 1
 3063828
 
 real	1m36.006s
