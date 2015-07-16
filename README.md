@@ -8,7 +8,7 @@ returns all the positions that utilize all the pieces while keeping them indepen
 
 Morpy is named after [Paul Morphy](https://en.wikipedia.org/wiki/Paul_Morphy).
 
-## Usage example
+## Usage examples
 ```bash
 $ morpy.py --help
 usage: morpy.py [-h] [--kings n] [--queens n] [--bishops n] [--knights n]
@@ -35,5 +35,5 @@ $ time morpy.py 7 7 --kings 2 --queens 2 --bishops 2 --knights 1
 
 real	1m36.006s
 user	1m35.092s
-sys	0m0.864s
+sys	  0m0.864s
 ```
