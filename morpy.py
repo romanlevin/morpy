@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*
 """
 Cooridinate system is x, y - going from the top left corner to the bottom
 right.
 """
 
+from __future__ import print_function, unicode_literals
 import itertools
 import textwrap
 from collections import namedtuple
@@ -43,14 +45,15 @@ def get_coordinates(dimensions):
     A generator of all possible coordinates in a `dimensions`-sized board.
     """
     d_x, d_y = dimensions
-    yield from (Coordinate(x=x, y=y) for x, y in
-                itertools.product(range(d_x), range(d_y)))
+    return (Coordinate(x=x, y=y) for x, y in
+            itertools.product(range(d_x), range(d_y)))
 
 
 def get_positions_iter(dimensions, pieces_to_place):
     """
     Iteratively generate all valid positions for `dimensions` and `pieces_to_place`.
     """
+    print(pieces_to_place)
     # Populate intial valid positions by placing the first piece at each of the coordinates
     coordinates = tuple(get_coordinates(dimensions))
     last_pass = {
@@ -63,10 +66,12 @@ def get_positions_iter(dimensions, pieces_to_place):
         for position in last_pass:
             attacked_in_position = attacked_coordinates_in_position(position)
             for coords in coordinates:
+                # Are these coordinates already attacked or occupied?
                 if coords in position.board or coords in attacked_in_position:
                     continue
                 placed_piece = PlacedPiece(piece, coords, dimensions)
                 attacked_by_piece = get_attacked_coordinates(placed_piece)
+                # Does the piece at this position attack any of the other pieces?
                 if set(attacked_by_piece) & set(position.board.keys()):
                     continue
                 board = {coords: piece}
@@ -121,7 +126,7 @@ def rank_and_file_iter(piece):
     """
     dimensions = piece.board_dimensions
     coord = piece.coordinate
-    yield from (
+    return (
         Coordinate(x=x, y=y)
         for x, y in itertools.chain(
             ((coord.x, y) for y in range(dimensions.y) if y != coord.y),
