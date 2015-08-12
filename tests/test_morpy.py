@@ -103,3 +103,26 @@ def test_get_valid_positions_3_by_3_two_kings_one_rook_iter():
         dimensions)
     expected = (position_1, position_2, position_3, position_4)
     assert set(expected) == set(positions)
+
+
+def test_queen_problem_with_four_queens():
+    Coordinate = morpy.Coordinate
+    dimensions = morpy.Dimensions(4, 4)
+    pieces = 4 * morpy.QUEEN
+    positions = morpy.get_positions_iter(dimensions, pieces)
+    position_1 = morpy.Position(frozendict({
+        Coordinate(0, 2): morpy.QUEEN,
+        Coordinate(1, 0): morpy.QUEEN,
+        Coordinate(2, 3): morpy.QUEEN,
+        Coordinate(3, 1): morpy.QUEEN,
+        }),
+        dimensions)
+    position_2 = morpy.Position(frozendict({
+        Coordinate(0, 1): morpy.QUEEN,
+        Coordinate(1, 3): morpy.QUEEN,
+        Coordinate(2, 0): morpy.QUEEN,
+        Coordinate(3, 2): morpy.QUEEN,
+        }),
+        dimensions)
+    expected = (position_1, position_2)
+    assert set(expected) == set(positions)
