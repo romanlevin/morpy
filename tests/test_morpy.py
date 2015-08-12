@@ -1,5 +1,6 @@
 from morpy import morpy
 from morpy.frozendict import frozendict
+from pytest import raises
 
 
 def test_attacked_positions_king():
@@ -126,3 +127,13 @@ def test_queen_problem_with_four_queens():
         dimensions)
     expected = (position_1, position_2)
     assert set(expected) == set(positions)
+
+
+def test_parser_no_input():
+    with raises(SystemExit):
+        morpy.parse()
+
+
+def test_main_no_input():
+    with raises(SystemExit):
+        morpy.main()
