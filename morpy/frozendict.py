@@ -1,5 +1,6 @@
 """
 An immutable, hashable Python mapping object.
+Supports Python 2.7 and 3.4.
 
 Inspired by:
 * https://github.com/slezica/python-frozendict
