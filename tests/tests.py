@@ -68,43 +68,6 @@ def test_attacked_positions_knight_in_corner():
     assert attacked_coordinates == expected
 
 
-def test_get_valid_positions_3_by_3_two_kings_one_rook():
-    Coordinate = morpy.Coordinate
-    dimensions = morpy.Dimensions(3, 3)
-    pieces = 2 * morpy.KING + morpy.ROOK
-    positions = morpy.get_valid_positions(dimensions, pieces)
-    position_1 = morpy.Position(
-        frozendict({
-            Coordinate(0, 1): morpy.ROOK,
-            Coordinate(2, 0): morpy.KING,
-            Coordinate(2, 2): morpy.KING,
-        }),
-        dimensions)
-    position_2 = morpy.Position(
-        frozendict({
-            Coordinate(1, 0): morpy.ROOK,
-            Coordinate(0, 2): morpy.KING,
-            Coordinate(2, 2): morpy.KING,
-        }),
-        dimensions)
-    position_3 = morpy.Position(
-        frozendict({
-            Coordinate(1, 2): morpy.ROOK,
-            Coordinate(0, 0): morpy.KING,
-            Coordinate(2, 0): morpy.KING,
-        }),
-        dimensions)
-    position_4 = morpy.Position(
-        frozendict({
-            Coordinate(2, 1): morpy.ROOK,
-            Coordinate(0, 0): morpy.KING,
-            Coordinate(0, 2): morpy.KING,
-        }),
-        dimensions)
-    expected = (position_1, position_2, position_3, position_4)
-    assert set(expected) == set(positions)
-
-
 def test_get_valid_positions_3_by_3_two_kings_one_rook_iter():
     Coordinate = morpy.Coordinate
     dimensions = morpy.Dimensions(3, 3)

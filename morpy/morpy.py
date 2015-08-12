@@ -7,19 +7,11 @@ right.
 
 from __future__ import print_function, unicode_literals
 import itertools
-import textwrap
 from collections import namedtuple
 from .frozendict import frozendict
 import argparse
 
 KING, QUEEN, BISHOP, KNIGHT, ROOK = '♔♕♗♘♖'
-PIECES = {
-    KING: 'rules',
-    QUEEN: 'rules',
-    BISHOP: 'rules',
-    KNIGHT: 'rules',
-    ROOK: 'rules',
-}
 
 Coordinate = namedtuple('Coordinate', ['x', 'y'])
 Dimensions = namedtuple('Dimensions', ['x', 'y'])
@@ -45,8 +37,7 @@ def get_coordinates(dimensions):
     A generator of all possible coordinates in a `dimensions`-sized board.
     """
     d_x, d_y = dimensions
-    return (Coordinate(x=x, y=y) for x, y in
-            itertools.product(range(d_x), range(d_y)))
+    return tuple(Coordinate(x=x, y=y) for x in range(d_x) for y in range(d_y))
 
 
 def get_positions_iter(dimensions, pieces_to_place):
@@ -54,7 +45,7 @@ def get_positions_iter(dimensions, pieces_to_place):
     Iteratively generate all valid positions for `dimensions` and `pieces_to_place`.
     """
     # Populate intial valid positions by placing the first piece at each of the coordinates
-    coordinates = tuple(get_coordinates(dimensions))
+    coordinates = get_coordinates(dimensions)
     last_pass = {
         Position(board=frozendict({coords: pieces_to_place[0]}), dimensions=dimensions) for coords in coordinates
     }
@@ -80,36 +71,6 @@ def get_positions_iter(dimensions, pieces_to_place):
                 current_pass.add(new_position)
         last_pass, current_pass = current_pass, set()
     return last_pass
-
-
-def get_positions(dimensions, pieces_to_place):
-    """
-    A generator of all possible positions given `dimensions` and `pieces_to_place`.
-
-    `pieces_to_place` is a string of piece types - eg '♔♔♖' will place two kings and
-    a rook on the board.
-    """
-    checked_boards = set()
-    coordinates = get_coordinates(dimensions)
-    position_coords = itertools.permutations(coordinates, len(pieces_to_place))
-    for coords in position_coords:
-        board = frozendict(zip(coords, pieces_to_place))
-        if board in checked_boards:
-            continue
-        checked_boards.add(board)
-        yield Position(board=board, dimensions=dimensions)
-
-
-def draw_position(position):
-    """
-    Prints a graphical representation of `position`.
-    """
-    board = position.board
-    dimensions = position.dimensions
-    array = ''.join(
-        board.get(coordinate, '□') for coordinate in
-        get_coordinates(dimensions))
-    print(textwrap.fill(array, dimensions.x, drop_whitespace=False))
 
 
 def filter_coordinates(coordinates, dimensions):
@@ -215,20 +176,6 @@ def attacked_coordinates_in_position(position):
         for coords, piece_type in position.board.items())
     attacked_coordinates = {coords for piece in placed_pieces for coords in get_attacked_coordinates(piece)}
     return attacked_coordinates
-
-
-def is_position_valid(position):
-    """
-    Are all pieces in `position` independent?
-    """
-    attacked_coordinates = attacked_coordinates_in_position(position)
-    return not any(coord in position.board for coord in attacked_coordinates)
-
-
-def get_valid_positions(dimensions, pieces):
-    for position in get_positions(dimensions, pieces):
-        if is_position_valid(position):
-            yield position
 
 
 def parse():
