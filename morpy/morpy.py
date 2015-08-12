@@ -20,6 +20,9 @@ PlacedPiece = namedtuple('PlacedPiece', ['type', 'coordinate', 'board_dimensions
 
 
 def cache_attack_map(f):
+    """
+    A decorator that memoizes attack map functions.
+    """
     cache = {}
 
     def wrapper(piece):
@@ -34,15 +37,26 @@ def cache_attack_map(f):
 
 def get_coordinates(dimensions):
     """
-    A generator of all possible coordinates in a `dimensions`-sized board.
+    Return a tuple of all possible coordinates in a `dimensions`-sized board.
     """
     d_x, d_y = dimensions
     return tuple(Coordinate(x=x, y=y) for x in range(d_x) for y in range(d_y))
 
 
+def attacked_coordinates_in_position(position):
+    """
+    Return a set of all `coordinate`s that are attacked in `position`.
+    """
+    placed_pieces = (
+        PlacedPiece(piece_type, coords, position.dimensions)
+        for coords, piece_type in position.board.items())
+    attacked_coordinates = {coords for piece in placed_pieces for coords in get_attacked_coordinates(piece)}
+    return attacked_coordinates
+
+
 def get_positions_iter(dimensions, pieces_to_place):
     """
-    Iteratively generate all valid positions for `dimensions` and `pieces_to_place`.
+    Generate all valid positions for `dimensions` and `pieces_to_place`.
     """
     # Populate intial valid positions by placing the first piece at each of the coordinates
     coordinates = get_coordinates(dimensions)
@@ -75,18 +89,19 @@ def get_positions_iter(dimensions, pieces_to_place):
 
 def filter_coordinates(coordinates, dimensions):
     """
-    Filters iterable `coordinates` from all members who are outisde of `dimensions`.
+    Filter iterable `coordinates` from all members who are outisde of `dimensions`.
     """
     return filter(lambda coord: 0 <= coord.x < dimensions.x and 0 <= coord.y < dimensions.y, coordinates)
 
 
-def rank_and_file_iter(piece):
+@cache_attack_map
+def rank_and_file(piece):
     """
-    Generates all squares on the same rank and file as `piece`.
+    Return a set of all `coordinate`s on the same rank and file as `piece`.
     """
     dimensions = piece.board_dimensions
     coord = piece.coordinate
-    return (
+    return set(
         Coordinate(x=x, y=y)
         for x, y in itertools.chain(
             ((coord.x, y) for y in range(dimensions.y) if y != coord.y),
@@ -94,14 +109,9 @@ def rank_and_file_iter(piece):
         ))
 
 
-@cache_attack_map
-def rank_and_file(piece):
-    return set(rank_and_file_iter(piece))
-
-
 def diagonals_iter(piece):
     """
-    Generates all squares on the same diagonals as `piece`.
+    Generate all `coordinate`s on the same diagonals as `piece`.
     """
     dimensions = piece.board_dimensions
     coord = piece.coordinate
@@ -115,11 +125,17 @@ def diagonals_iter(piece):
 
 @cache_attack_map
 def diagonals(piece):
+    """
+    Return a set of all `coordinate`s on the same diagonals as `piece`.
+    """
     return set(diagonals_iter(piece))
 
 
 @cache_attack_map
 def knight_moves(piece):
+    """
+    Return a set of all `coordinate`s a knight's move away from `piece`.
+    """
     coord = piece.coordinate
     dimensions = piece.board_dimensions
     potential_attacked = (
@@ -132,6 +148,9 @@ def knight_moves(piece):
 
 @cache_attack_map
 def king_moves(piece):
+    """
+    Return a set of all `coordinate`s a king's move away from `piece`.
+    """
     coord = piece.coordinate
     dimensions = piece.board_dimensions
     potential_attacked = (
@@ -143,12 +162,15 @@ def king_moves(piece):
 
 @cache_attack_map
 def queen_moves(piece):
+    """
+    Return a set of all `coordinate`s a queens's move away from `piece`.
+    """
     return diagonals(piece) | rank_and_file(piece)
 
 
 def get_attacked_coordinates(piece):
     """
-    Takes a PlacedPiece object and returns a set of all positions it attacks.
+    Return a set of all positions attacked by `PlacePiece` `piece`.
     """
     piece_type = piece.type
 
@@ -170,15 +192,10 @@ def get_attacked_coordinates(piece):
     return attacked
 
 
-def attacked_coordinates_in_position(position):
-    placed_pieces = (
-        PlacedPiece(piece_type, coords, position.dimensions)
-        for coords, piece_type in position.board.items())
-    attacked_coordinates = {coords for piece in placed_pieces for coords in get_attacked_coordinates(piece)}
-    return attacked_coordinates
-
-
 def parse():
+    """
+    Create CLI parser, and parse arugments.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('N', type=int, help='First board dimension')
     parser.add_argument('M', type=int, help='Second board dimension')
@@ -192,6 +209,9 @@ def parse():
 
 
 def main():
+    """
+    Handle all CLI I/O.
+    """
     args = parse()
     dimensions = Dimensions(args.N, args.M)
     pieces = args.kings * KING + args.queens * QUEEN + args.bishops * BISHOP
