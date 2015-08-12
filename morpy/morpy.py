@@ -199,11 +199,16 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('N', type=int, help='First board dimension')
     parser.add_argument('M', type=int, help='Second board dimension')
-    parser.add_argument('--kings', type=int, metavar='n', default=0, help='Number of king pieces to place on the board')
-    parser.add_argument('--queens', type=int, metavar='n', default=0, help='Number of queen pieces to place on the board')
-    parser.add_argument('--bishops', type=int, metavar='n', default=0, help='Number of bishop pieces to place on the board')
-    parser.add_argument('--knights', type=int, metavar='n', default=0, help='Number of knight pieces to place on the board')
-    parser.add_argument('--rooks', type=int, metavar='n', default=0, help='Number of rook pieces to place on the board')
+    parser.add_argument('--kings', type=int, metavar='n', default=0,
+                        help='Number of king pieces to place on the board')
+    parser.add_argument('--queens', type=int, metavar='n', default=0,
+                        help='Number of queen pieces to place on the board')
+    parser.add_argument('--bishops', type=int, metavar='n', default=0,
+                        help='Number of bishop pieces to place on the board')
+    parser.add_argument('--knights', type=int, metavar='n', default=0,
+                        help='Number of knight pieces to place on the board')
+    parser.add_argument('--rooks', type=int, metavar='n', default=0,
+                        help='Number of rook pieces to place on the board')
     parser.add_argument('--print-pieces', action='store_true', help='Print the pieces to be placed on the board')
     return parser.parse_args()
 
