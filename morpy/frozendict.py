@@ -17,7 +17,7 @@ class FrozenDict(dict):
         self.__hash = None
 
     def __setitem__(self, key, value):
-        raise AttributeError()
+        raise TypeError('%r object does not support item assignment' % self.__class__.__name__)
 
     def __hash__(self):
         if self.__hash is None:
